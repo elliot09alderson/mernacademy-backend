@@ -29,6 +29,8 @@ app.use(
     origin: [
       process.env.FRONTEND_URL || "http://localhost:5173",
       "http://localhost:8080",
+      "https://mern-ai-campus.vercel.app",
+      "https://mernacademy.in",
     ],
     credentials: true, // IMPORTANT: Allows cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
