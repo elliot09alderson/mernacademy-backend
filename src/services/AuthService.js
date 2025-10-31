@@ -4,11 +4,22 @@ import StudentRepository from '../repositories/StudentRepository.js';
 import { generateToken, generateRefreshToken } from '../utils/jwt.js';
 import Student from '../models/Student.js';
 import Faculty from '../models/Faculty.js';
+import Admin from '../models/Admin.js';
 import Branch from '../models/Branch.js';
 
 class AuthService {
   async register(userData) {
-    const { email, password, role, ...otherData } = userData;
+    const {
+      email,
+      password,
+      role,
+      name,
+      phone,
+      address,
+      profilePicture,
+      branchId: providedBranchId,
+      ...roleSpecificData
+    } = userData;
 
     const existingUser = await UserRepository.findByEmail(email);
     if (existingUser) {
@@ -16,7 +27,7 @@ class AuthService {
     }
 
     // Handle branchId requirement for non-admin users
-    let branchId = otherData.branchId;
+    let branchId = providedBranchId;
     if (role !== 'admin' && !branchId) {
       // Find a default branch or create one if none exists
       let defaultBranch = await Branch.findOne({ isActive: true });
@@ -36,36 +47,64 @@ class AuthService {
       branchId = defaultBranch._id;
     }
 
+    // Create user with only basic common fields
     const user = await UserRepository.create({
+      name,
       email,
       password,
       role,
-      branchId: role === 'admin' ? undefined : branchId,
-      ...otherData
+      phone,
+      address,
+      profilePicture,
+      branchId: role === 'admin' ? undefined : branchId
     });
 
     if (role === 'student') {
       const studentId = `STU${Date.now()}`;
       const rollNumber = `${new Date().getFullYear()}${Math.floor(Math.random() * 10000)}`;
 
+      // Create student with role-specific fields
       await Student.create({
         userId: user._id,
         studentId,
         rollNumber,
         admissionYear: new Date().getFullYear(),
         currentSemester: 1,
-        guardianName: otherData.guardianName || '',
-        guardianContact: otherData.guardianContact || ''
+        guardianName: roleSpecificData.guardianName || '',
+        guardianContact: roleSpecificData.guardianContact || '',
+        qualification: roleSpecificData.qualification || '',
+        hereaboutus: roleSpecificData.hereaboutus || ''
       });
     } else if (role === 'faculty') {
       const employeeId = `FAC${Date.now()}`;
 
+      // Create faculty with role-specific fields
       await Faculty.create({
         userId: user._id,
         employeeId,
-        specialization: otherData.specialization || '',
-        qualification: otherData.qualification || '',
-        experience: otherData.experience || 0
+        specialization: roleSpecificData.specialization || '',
+        qualification: roleSpecificData.qualification || '',
+        experience: roleSpecificData.experience || 0
+      });
+    } else if (role === 'admin') {
+      const adminId = `ADM${Date.now()}`;
+
+      // Create admin with role-specific fields
+      await Admin.create({
+        userId: user._id,
+        adminId,
+        department: roleSpecificData.department || 'Administration',
+        permissions: roleSpecificData.permissions || [
+          'manage_users',
+          'manage_students',
+          'manage_faculty',
+          'manage_courses',
+          'manage_branches',
+          'manage_events',
+          'view_reports',
+          'manage_settings'
+        ],
+        isSuperAdmin: roleSpecificData.isSuperAdmin || false
       });
     }
 
@@ -133,7 +172,7 @@ class AuthService {
   }
 
   async getUserProfile(userId) {
-    const user = await UserRepository.findWithPopulate(userId, 'branchId enrolledCourses');
+    const user = await UserRepository.findWithPopulate(userId, 'branchId');
     if (!user) {
       throw new Error('User not found');
     }
@@ -143,10 +182,15 @@ class AuthService {
 
     if (user.role === 'student') {
       const studentData = await StudentRepository.findByUserId(userId);
-      return { ...userData, studentDetails: studentData };
+      // Populate enrolledCourses from Student model
+      const populatedStudentData = await Student.findById(studentData._id).populate('enrolledCourses');
+      return { ...userData, studentDetails: populatedStudentData };
     } else if (user.role === 'faculty') {
       const facultyData = await Faculty.findOne({ userId }).populate('courses');
       return { ...userData, facultyDetails: facultyData };
+    } else if (user.role === 'admin') {
+      const adminData = await Admin.findOne({ userId });
+      return { ...userData, adminDetails: adminData };
     }
 
     return userData;

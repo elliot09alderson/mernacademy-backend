@@ -11,6 +11,8 @@ import courseRoutes from "./routes/courseRoutes.js";
 import branchRoutes from "./routes/branchRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
+import outstandingStudentRoutes from "./routes/outstandingStudentRoutes.js";
+import facultyManagementRoutes from "./routes/facultyManagementRoutes.js";
 
 dotenv.config();
 
@@ -28,9 +30,10 @@ app.use(
       process.env.FRONTEND_URL || "http://localhost:5173",
       "http://localhost:8080",
     ],
-    credentials: true,
+    credentials: true, // IMPORTANT: Allows cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
@@ -45,6 +48,8 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/branches", branchRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/outstanding-students", outstandingStudentRoutes);
+app.use("/api/faculty", facultyManagementRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });

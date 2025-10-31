@@ -31,14 +31,30 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  image: {
+    url: {
+      type: String,
+      required: true
+    },
+    publicId: {
+      type: String,
+      required: true
+    }
+  },
   images: [{
     url: String,
+    publicId: String,
     caption: String,
     uploadedAt: {
       type: Date,
       default: Date.now
     }
   }],
+  category: {
+    type: String,
+    enum: ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Seminar', 'Other'],
+    required: true
+  },
   registrationLink: {
     type: String,
     required: false

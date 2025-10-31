@@ -21,10 +21,45 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  icon: {
+    type: String,
+    enum: ['code', 'brain', 'rocket', 'star', 'trophy', 'target'],
+    default: 'code'
+  },
+  level: {
+    type: String,
+    enum: ['Beginner Friendly', 'Intermediate', 'Advanced'],
+    required: true
+  },
+  batchSize: {
+    type: String,
+    enum: ['Small Batch', 'Medium Batch', 'Large Batch'],
+    default: 'Small Batch'
+  },
+  features: [{
+    type: String,
+    trim: true
+  }],
+  originalPrice: {
+    type: Number,
+    required: true
+  },
+  discountedPrice: {
+    type: Number,
+    required: true
+  },
+  discountPercentage: {
+    type: Number,
+    default: 0
+  },
+  isLimitedOffer: {
+    type: Boolean,
+    default: false
+  },
   branchId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Branch',
-    required: true
+    required: false
   },
   facultyId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,12 +68,12 @@ const courseSchema = new mongoose.Schema({
   },
   credits: {
     type: Number,
-    required: true,
+    required: false,
     min: 1
   },
   semester: {
     type: Number,
-    required: true,
+    required: false,
     min: 1,
     max: 8
   },

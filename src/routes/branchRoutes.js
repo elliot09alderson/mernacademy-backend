@@ -16,6 +16,7 @@ import {
   updateBranchSchema,
   branchIdParamSchema
 } from '../validations/branchValidation.js';
+import { uploadBranchImages } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -24,8 +25,8 @@ router.get('/', getAllBranches);
 router.get('/:id', validateRequest(branchIdParamSchema), getBranch);
 router.get('/:id/statistics', validateRequest(branchIdParamSchema), getBranchStatistics);
 
-router.post('/', authenticate, isAdmin, validateRequest(createBranchSchema), createBranch);
-router.put('/:id', authenticate, isAdmin, validateRequest(branchIdParamSchema), validateRequest(updateBranchSchema), updateBranch);
+router.post('/', authenticate, isAdmin, uploadBranchImages.array('images', 10), validateRequest(createBranchSchema), createBranch);
+router.put('/:id', authenticate, isAdmin, uploadBranchImages.array('images', 10), validateRequest(branchIdParamSchema), validateRequest(updateBranchSchema), updateBranch);
 router.delete('/:id', authenticate, isAdmin, validateRequest(branchIdParamSchema), deleteBranch);
 router.post('/:id/assign-head', authenticate, isAdmin, validateRequest(branchIdParamSchema), assignDepartmentHead);
 

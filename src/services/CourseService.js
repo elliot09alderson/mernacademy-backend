@@ -11,9 +11,12 @@ class CourseService {
       throw new Error('Course code already exists');
     }
 
-    const branch = await BranchRepository.findById(branchId);
-    if (!branch) {
-      throw new Error('Branch not found');
+    // Only validate branch if branchId is provided
+    if (branchId) {
+      const branch = await BranchRepository.findById(branchId);
+      if (!branch) {
+        throw new Error('Branch not found');
+      }
     }
 
     const course = await CourseRepository.create(courseData);

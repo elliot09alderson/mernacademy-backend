@@ -2,7 +2,8 @@ import BranchService from '../services/BranchService.js';
 
 export const createBranch = async (req, res) => {
   try {
-    const branch = await BranchService.createBranch(req.body);
+    const files = req.files || [];
+    const branch = await BranchService.createBranch(req.body, files);
     res.status(201).json({
       success: true,
       message: 'Branch created successfully',
@@ -18,7 +19,8 @@ export const createBranch = async (req, res) => {
 
 export const updateBranch = async (req, res) => {
   try {
-    const branch = await BranchService.updateBranch(req.params.id, req.body);
+    const files = req.files || [];
+    const branch = await BranchService.updateBranch(req.params.id, req.body, files);
     res.status(200).json({
       success: true,
       message: 'Branch updated successfully',

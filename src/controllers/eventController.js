@@ -1,14 +1,36 @@
 import EventService from '../services/EventService.js';
+import { deleteCloudinaryImage } from '../config/cloudinary.js';
 
 export const createEvent = async (req, res) => {
   try {
-    const event = await EventService.createEvent(req.body, req.userId);
+    // Check if image file is provided
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Event image is required'
+      });
+    }
+
+    // Prepare event data with image
+    const eventData = {
+      ...req.body,
+      image: {
+        url: req.file.path,
+        publicId: req.file.filename
+      }
+    };
+
+    const event = await EventService.createEvent(eventData, req.userId);
     res.status(201).json({
       success: true,
       message: 'Event created successfully',
       data: event
     });
   } catch (error) {
+    // Delete uploaded image if event creation fails
+    if (req.file) {
+      await deleteCloudinaryImage(req.file.filename);
+    }
     res.status(400).json({
       success: false,
       message: error.message
@@ -34,7 +56,16 @@ export const updateEvent = async (req, res) => {
 
 export const deleteEvent = async (req, res) => {
   try {
+    const event = await EventService.getEvent(req.params.id);
+
+    // Delete the event
     await EventService.deleteEvent(req.params.id);
+
+    // Delete image from Cloudinary
+    if (event.image && event.image.publicId) {
+      await deleteCloudinaryImage(event.image.publicId);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Event deleted successfully'

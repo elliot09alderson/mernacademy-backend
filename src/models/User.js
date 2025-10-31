@@ -44,10 +44,6 @@ const userSchema = new mongoose.Schema({
     ref: 'Branch',
     required: function() { return this.role !== 'admin'; }
   },
-  enrolledCourses: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Course'
-  }],
   createdAt: {
     type: Date,
     default: Date.now

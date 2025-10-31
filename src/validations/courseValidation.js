@@ -6,10 +6,10 @@ export const createCourseSchema = z.object({
     courseCode: z.string().min(2, 'Course code is required'),
     description: z.string().min(10, 'Description must be at least 10 characters'),
     duration: z.string().min(1, 'Duration is required'),
-    branchId: z.string().min(1, 'Branch ID is required'),
+    branchId: z.string().optional(),
     facultyId: z.string().optional(),
-    credits: z.number().min(1, 'Credits must be at least 1'),
-    semester: z.number().min(1).max(8, 'Semester must be between 1 and 8'),
+    credits: z.number().optional(),
+    semester: z.number().optional(),
     syllabus: z.string().optional(),
     prerequisites: z.array(z.string()).optional(),
   })

@@ -6,9 +6,9 @@ export const createBranchSchema = z.object({
     branchCode: z.string().min(2, 'Branch code is required'),
     description: z.string().min(10, 'Description must be at least 10 characters'),
     departmentHead: z.string().optional(),
-    totalSeats: z.number().min(1, 'Total seats must be at least 1'),
-    availableSeats: z.number().min(0, 'Available seats cannot be negative'),
-    establishedYear: z.number().optional(),
+    totalSeats: z.coerce.number().min(1, 'Total seats must be at least 1'),
+    availableSeats: z.coerce.number().min(0, 'Available seats cannot be negative').optional(),
+    establishedYear: z.coerce.number().optional(),
   })
 });
 

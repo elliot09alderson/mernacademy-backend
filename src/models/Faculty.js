@@ -12,6 +12,27 @@ const facultySchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
+  image: {
+    url: {
+      type: String,
+      required: false
+    },
+    publicId: {
+      type: String,
+      required: false
+    }
+  },
   specialization: {
     type: String,
     required: true
@@ -25,6 +46,10 @@ const facultySchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  expertise: [{
+    type: String,
+    trim: true
+  }],
   courses: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course'
@@ -43,6 +68,10 @@ const facultySchema = new mongoose.Schema({
   officeHours: {
     type: String,
     required: false
+  },
+  isActive: {
+    type: Boolean,
+    default: true
   },
   createdAt: {
     type: Date,

@@ -46,6 +46,18 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  qualification: {
+    type: String,
+    required: false
+  },
+  hereaboutus: {
+    type: String,
+    required: false
+  },
+  enrolledCourses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course'
+  }],
   bloodGroup: {
     type: String,
     enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],

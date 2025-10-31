@@ -21,7 +21,7 @@ const createSendToken = (student, statusCode, res) => {
     expires: new Date(Date.now() + JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   res.cookie("studentJwt", token, cookieOptions);
@@ -29,9 +29,9 @@ const createSendToken = (student, statusCode, res) => {
   // Remove password from output
   student.password = undefined;
 
+  // Don't send token in response body - cookies only
   res.status(statusCode).json({
     status: "success",
-    token,
     data: {
       student,
     },
@@ -143,9 +143,11 @@ export const studentLogin = async (req, res) => {
 
 // Student Logout
 export const studentLogout = (req, res) => {
-  res.cookie("studentJwt", "loggedout", {
-    expires: new Date(Date.now() + 10 * 1000),
+  res.cookie("studentJwt", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    expires: new Date(0),
   });
 
   res.status(200).json({
@@ -291,9 +293,11 @@ export const deleteStudentAccount = async (req, res) => {
     }
 
     // Clear cookie
-    res.cookie("studentJwt", "loggedout", {
-      expires: new Date(Date.now() + 10 * 1000),
+    res.cookie("studentJwt", "", {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      expires: new Date(0),
     });
 
     res.status(200).json({
