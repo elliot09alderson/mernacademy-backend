@@ -2,7 +2,16 @@ import CourseService from '../services/CourseService.js';
 
 export const createCourse = async (req, res) => {
   try {
-    const course = await CourseService.createCourse(req.body);
+    // Add banner image data if file was uploaded
+    const courseData = { ...req.body };
+    if (req.file) {
+      courseData.bannerImage = {
+        url: req.file.path,
+        publicId: req.file.filename
+      };
+    }
+
+    const course = await CourseService.createCourse(courseData);
     res.status(201).json({
       success: true,
       message: 'Course created successfully',
@@ -18,7 +27,16 @@ export const createCourse = async (req, res) => {
 
 export const updateCourse = async (req, res) => {
   try {
-    const course = await CourseService.updateCourse(req.params.id, req.body);
+    // Add banner image data if file was uploaded
+    const courseData = { ...req.body };
+    if (req.file) {
+      courseData.bannerImage = {
+        url: req.file.path,
+        publicId: req.file.filename
+      };
+    }
+
+    const course = await CourseService.updateCourse(req.params.id, courseData);
     res.status(200).json({
       success: true,
       message: 'Course updated successfully',

@@ -19,9 +19,10 @@ const createSendToken = (student, statusCode, res) => {
 
   const cookieOptions = {
     expires: new Date(Date.now() + JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    httpOnly: true, // prevent JS access
+    secure: process.env.NODE_ENV === "production", // only true in prod
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   };
 
   res.cookie("studentJwt", token, cookieOptions);
@@ -294,9 +295,10 @@ export const deleteStudentAccount = async (req, res) => {
 
     // Clear cookie
     res.cookie("studentJwt", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: true, // prevent JS access
+      secure: process.env.NODE_ENV === "production", // only true in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
       expires: new Date(0),
     });
 

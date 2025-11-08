@@ -8,9 +8,10 @@ export const register = async (req, res) => {
     // secure: false - for local development (http://localhost)
     // sameSite: 'none' - allows cross-origin requests with credentials
     res.cookie("token", result.token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      httpOnly: true, // prevent JS access
+      secure: process.env.NODE_ENV === "production", // only true in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -39,9 +40,10 @@ export const login = async (req, res) => {
     // secure: false - for local development (http://localhost)
     // sameSite: 'none' - allows cross-origin requests with credentials
     res.cookie("token", result.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "none",
+      httpOnly: true, // prevent JS access
+      secure: process.env.NODE_ENV === "production", // only true in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -64,10 +66,10 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   // Clear secure cookie
   res.cookie("token", "", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "none",
-    expires: new Date(0),
+    httpOnly: true, // prevent JS access
+    secure: process.env.NODE_ENV === "production", // only true in prod
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   });
 
   res.status(200).json({

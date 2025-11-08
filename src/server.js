@@ -13,6 +13,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import outstandingStudentRoutes from "./routes/outstandingStudentRoutes.js";
 import facultyManagementRoutes from "./routes/facultyManagementRoutes.js";
+import testimonialRoutes from "./routes/testimonialRoutes.js";
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/outstanding-students", outstandingStudentRoutes);
 app.use("/api/faculty", facultyManagementRoutes);
+app.use("/api/testimonials", testimonialRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });

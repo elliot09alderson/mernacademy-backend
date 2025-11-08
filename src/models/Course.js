@@ -26,6 +26,16 @@ const courseSchema = new mongoose.Schema({
     enum: ['code', 'brain', 'rocket', 'star', 'trophy', 'target'],
     default: 'code'
   },
+  bannerImage: {
+    url: {
+      type: String,
+      required: false
+    },
+    publicId: {
+      type: String,
+      required: false
+    }
+  },
   level: {
     type: String,
     enum: ['Beginner Friendly', 'Intermediate', 'Advanced'],

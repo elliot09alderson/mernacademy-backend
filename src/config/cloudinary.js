@@ -112,6 +112,56 @@ export const uploadFacultyImage = multer({
   }
 });
 
+// Configure Cloudinary storage for testimonial images
+const testimonialStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'mernacademy/testimonials',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 500, height: 500, crop: 'fill', gravity: 'face' }]
+  }
+});
+
+// Create multer upload middleware for single testimonial image
+export const uploadTestimonialImage = multer({
+  storage: testimonialStorage,
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB max file size
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
+// Configure Cloudinary storage for course banner images
+const courseBannerStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'mernacademy/course-banners',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1200, height: 600, crop: 'fill' }]
+  }
+});
+
+// Create multer upload middleware for course banner image
+export const uploadCourseBanner = multer({
+  storage: courseBannerStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB max file size
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
 // Helper function to delete images from Cloudinary
 export const deleteCloudinaryImage = async (publicId) => {
   try {

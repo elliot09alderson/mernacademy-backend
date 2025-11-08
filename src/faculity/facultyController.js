@@ -14,12 +14,11 @@ const createSendToken = (faculty, statusCode, res) => {
   const token = generateToken(faculty._id);
 
   const cookieOptions = {
-    expires: new Date(
-      Date.now() + JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none'
+    expires: new Date(Date.now() + JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true, // prevent JS access
+    secure: process.env.NODE_ENV === "production", // only true in prod
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   };
 
   res.cookie('jwt', token, cookieOptions);

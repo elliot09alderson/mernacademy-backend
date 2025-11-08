@@ -17,6 +17,7 @@ import {
   updateCourseSchema,
   courseIdParamSchema
 } from '../validations/courseValidation.js';
+import { uploadCourseBanner } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -27,8 +28,8 @@ router.get('/semester/:semester', getCoursesBySemester);
 router.get('/', getAllCourses);
 router.get('/:id', validateRequest(courseIdParamSchema), getCourse);
 
-router.post('/', authenticate, isAdmin, validateRequest(createCourseSchema), createCourse);
-router.put('/:id', authenticate, isAdmin, validateRequest(courseIdParamSchema), validateRequest(updateCourseSchema), updateCourse);
+router.post('/', authenticate, isAdmin, uploadCourseBanner.single('bannerImage'), createCourse);
+router.put('/:id', authenticate, isAdmin, uploadCourseBanner.single('bannerImage'), updateCourse);
 router.delete('/:id', authenticate, isAdmin, validateRequest(courseIdParamSchema), deleteCourse);
 router.post('/:id/assign-faculty', authenticate, isAdmin, validateRequest(courseIdParamSchema), assignFaculty);
 
