@@ -14,6 +14,7 @@ import studentRoutes from "./routes/studentRoutes.js";
 import outstandingStudentRoutes from "./routes/outstandingStudentRoutes.js";
 import facultyManagementRoutes from "./routes/facultyManagementRoutes.js";
 import testimonialRoutes from "./routes/testimonialRoutes.js";
+import courseInquiryRoutes from "./routes/courseInquiryRoutes.js";
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use("/api/students", studentRoutes);
 app.use("/api/outstanding-students", outstandingStudentRoutes);
 app.use("/api/faculty", facultyManagementRoutes);
 app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/inquiries", courseInquiryRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
