@@ -122,6 +122,10 @@ const branchSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
+  mapUrl: {
+    type: String,
+    required: false
+  },
   isActive: {
     type: Boolean,
     default: true
