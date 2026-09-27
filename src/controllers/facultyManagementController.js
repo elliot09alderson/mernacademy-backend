@@ -156,6 +156,25 @@ export const updateFaculty = async (req, res) => {
       req.body.expertise = req.body.expertise.split(',').map(item => item.trim());
     }
 
+    // Multipart form fields arrive flat — nest them under socialLinks to match the schema
+    if (req.body.portfolio || req.body.linkedin) {
+      req.body.socialLinks = {
+        portfolio: req.body.portfolio,
+        linkedin: req.body.linkedin
+      };
+      delete req.body.portfolio;
+      delete req.body.linkedin;
+    }
+
+    const existingFaculty = req.file ? await Faculty.findById(req.params.id) : null;
+
+    if (req.file) {
+      req.body.image = {
+        url: req.file.path,
+        publicId: req.file.filename
+      };
+    }
+
     const faculty = await Faculty.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -170,6 +189,10 @@ export const updateFaculty = async (req, res) => {
         success: false,
         message: 'Faculty not found'
       });
+    }
+
+    if (req.file && existingFaculty?.image?.publicId) {
+      await deleteCloudinaryImage(existingFaculty.image.publicId);
     }
 
     res.status(200).json({

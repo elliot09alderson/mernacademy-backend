@@ -20,7 +20,7 @@ router.get('/:id', getFaculty);
 // Admin routes
 router.post('/', authenticate, isAdmin, uploadFacultyImage.single('image'), createFaculty);
 router.get('/', authenticate, isAdmin, getAllFaculty);
-router.put('/:id', authenticate, isAdmin, updateFaculty);
+router.put('/:id', authenticate, isAdmin, uploadFacultyImage.single('image'), updateFaculty);
 router.delete('/:id', authenticate, isAdmin, deleteFaculty);
 router.patch('/:id/toggle-status', authenticate, isAdmin, toggleFacultyStatus);
 
