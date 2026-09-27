@@ -26,6 +26,16 @@ export const createFaculty = async (req, res) => {
       facultyData.expertise = facultyData.expertise.split(',').map(item => item.trim());
     }
 
+    // Multipart form fields arrive flat — nest them under socialLinks to match the schema
+    if (facultyData.portfolio || facultyData.linkedin) {
+      facultyData.socialLinks = {
+        portfolio: facultyData.portfolio,
+        linkedin: facultyData.linkedin
+      };
+      delete facultyData.portfolio;
+      delete facultyData.linkedin;
+    }
+
     const faculty = await Faculty.create(facultyData);
 
     res.status(201).json({

@@ -70,6 +70,18 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  socialLinks: {
+    portfolio: {
+      type: String,
+      required: false,
+      trim: true
+    },
+    linkedin: {
+      type: String,
+      required: false,
+      trim: true
+    }
+  },
   isActive: {
     type: Boolean,
     default: true
