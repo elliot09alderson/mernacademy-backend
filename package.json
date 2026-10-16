@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@anthropic-ai/claude-code": "^1.0.120",
+    "@anthropic-ai/claude-code": "^2.1.179",
     "@azure/msal-browser": "^4.15.0",
     "@azure/msal-react": "^3.0.15",
     "bcryptjs": "^3.0.2",
