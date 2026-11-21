@@ -1,4 +1,5 @@
 import AuthService from "../services/AuthService.js";
+import { sendRegistrationNotification } from "../config/mailer.js";
 
 export const register = async (req, res) => {
   try {
@@ -23,6 +24,10 @@ export const register = async (req, res) => {
       message: "Registration successful",
       data: dataWithoutToken,
     });
+
+    sendRegistrationNotification(result.user).catch((err) =>
+      console.error("Registration notification email failed:", err.message)
+    );
   } catch (error) {
     res.status(400).json({
       success: false,
